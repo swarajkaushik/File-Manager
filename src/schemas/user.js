@@ -27,6 +27,9 @@ const User = sequelize.define(
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
+    tokens: {
+      type: DataTypes.ARRAY(DataTypes.TEXT),
+    },
     createdat: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
