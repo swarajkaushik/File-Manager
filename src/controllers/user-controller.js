@@ -1,4 +1,4 @@
-const userServiceIns = require("../services/index");
+const { userServiceIns } = require("../services/index");
 
 class UserController {
   async postUser(req, res) {

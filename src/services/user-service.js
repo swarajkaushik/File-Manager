@@ -2,6 +2,7 @@ const User = require("../schemas/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const sequelize = require("../config/sequelize");
 const password_key = process.env.PASSWORD_KEY;
 
 class UserService {
@@ -52,6 +53,17 @@ class UserService {
       // Generate JWT token
       const token = jwt.sign({ id: user.id }, password_key);
 
+      // Push the generated token into the user's tokens array
+      user.tokens.push(token);
+
+      // Save the updated user record with the new token
+      await sequelize.query(
+        "UPDATE users SET tokens = array_append(tokens, ?) WHERE id = ?",
+        {
+          replacements: [token, user.id],
+          type: sequelize.QueryTypes.UPDATE,
+        }
+      );
       res.json({ token });
     } catch (error) {
       console.error(error);

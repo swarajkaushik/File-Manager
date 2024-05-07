@@ -8,17 +8,21 @@ const auth = async (req, res, next) => {
     const token = req.header("Authorization").replace("Bearer ", "");
     const decoded = verify(token, password_key);
     const user = await User.findOne({
-      _id: decoded._id,
-      "tokens.token": token,
+      where: {
+        id: decoded.id,
+      },
     });
-
-    if (!user) {
+    if (!user || user.tokens.length === 0) {
       throw new Error();
     }
 
-    req.token = token;
-    req.user = user;
-    next();
+    if (user.tokens.includes(token)) {
+      req.token = token;
+      req.user = user;
+      next();
+    } else {
+      res.status(401).send({ error: "Please authenticate." });
+    }
   } catch (e) {
     res.status(401).send({ error: "Please authenticate." });
   }

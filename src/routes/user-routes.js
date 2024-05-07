@@ -1,5 +1,5 @@
 const express = require("express");
-const userControllerIns = require("../controllers/index");
+const { userControllerIns } = require("../controllers/index");
 const router = express.Router();
 
 router.post("/user/create", async (req, res) => {
